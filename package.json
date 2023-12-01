@@ -17,7 +17,8 @@
     "pg": "^8.11.3",
     "pg-hstore": "^2.3.4",
     "pug": "^3.0.2",
-    "sequelize": "^6.35.1"
+    "sequelize": "^6.35.1",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
