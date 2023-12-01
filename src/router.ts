@@ -1,29 +1,15 @@
 import { Router, Request, Response } from "express";
+import bookControllers from "./controllers/bookController.js";
+
 const router = Router();
 
 router.route("/").get((req: Request, res: Response) => {
   res.render("index");
 });
 
-router.route("/api/vadias").get((req: Request, res: Response) => {
-  res.json([
-    {
-      name: "Bianca",
-      description: "Senta",
-    },
-    {
-      name: "Julia",
-      description: "Da",
-    },
-    {
-      name: "Valeria",
-      description: "Chupa",
-    },
-    {
-      name: "Fabiola",
-      description: "Mama",
-    },
-  ]);
-});
+router
+  .route("/api/books")
+  .get(bookControllers.getAllBooks)
+  .post(bookControllers.postBook);
 
 export default router;
