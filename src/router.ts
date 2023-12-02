@@ -12,4 +12,9 @@ router
   .get(bookControllers.getAllBooks)
   .post(bookControllers.postBook);
 
+router
+  .route("/api/users")
+  .get()
+  .post();
+
 export default router;
