@@ -6,8 +6,7 @@ const sequelize = new Sequelize("bookshelf", "postgres", "9182", {
 });
 
 export const syncToDB = async () => {
-  // o cara usando as melhores features do javascript, baby
-  Promise.all([sequelize.sync(), sequelize.authenticate()])
+  Promise.all([sequelize.sync({ alter: true }), sequelize.authenticate()])
     .then(() => {
       console.log("Synced and authenticated successfully");
     })
