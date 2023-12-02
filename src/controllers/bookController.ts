@@ -13,6 +13,7 @@ type BookPostData = {
 const bookControllers = {
   getAllBooks: async (req: Request, res: Response) => {
     try {
+      // later it will recieve filters, limiting, sorting, pagination;
       const allBooks = await Book.findAll();
 
       res.json({
@@ -29,16 +30,32 @@ const bookControllers = {
 
   postBook: async (req: Request, res: Response) => {
     try {
-      let bookData: BookPostData = {
-        id: randomUUID(),
-        title: req.body.title,
-        author: req.body.author,
-        pages: req.body.pages,
-      };
+      if (req.body instanceof Array) {
+        let booksData: Array<BookPostData> = [...req.body];
 
-      const newBook = await Book.create(bookData);
+        booksData = booksData.map((el) => {
+          return { ...el, id: randomUUID() };
+        });
 
-      res.json({ status: "success", data: newBook.dataValues });
+        console.log(booksData);
+
+        const newBooks = await Book.bulkCreate(booksData);
+
+        res.json({
+          status: "success",
+          data: newBooks,
+        });
+      } else {
+        let bookData: BookPostData = {
+          id: randomUUID(),
+          title: req.body.title,
+          author: req.body.author,
+          pages: req.body.pages,
+        };
+        // create = both build() & save();
+        const newBook = await Book.create(bookData);
+        res.json({ status: "success", data: newBook.toJSON() });
+      }
     } catch (e) {
       res.json({
         status: "fail",
