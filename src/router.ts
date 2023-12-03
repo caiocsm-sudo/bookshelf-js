@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
-import bookControllers from "./controllers/bookController.js";
+import bookController from "./controllers/bookController.js";
+// import userController
 
 const router = Router();
 
@@ -9,12 +10,22 @@ router.route("/").get((req: Request, res: Response) => {
 
 router
   .route("/api/books")
-  .get(bookControllers.getAllBooks)
-  .post(bookControllers.postBook);
+  .get(bookController.getAllBooks)
+  .post(bookController.postBook);
 
 router
-  .route("/api/users")
-  .get()
-  .post();
+  .route("/api/books/:id")
+  .patch(bookController.updateBook)
+  .delete(bookController.deleteBook);
+
+router
+  .route("/api/books/length-average")
+  .get(bookController.bookLengthAverage);
+
+router
+  .route("/api/books/how-many")
+  .get(bookController.booksHowMany);
+
+router.route("/api/users").get().post();
 
 export default router;
