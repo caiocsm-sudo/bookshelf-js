@@ -1,5 +1,5 @@
 import express from "express";
-import sequelize, {syncToDB} from "./models/db.js";
+import {syncToDB} from "./models/db.js";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import router from "./router.js";
