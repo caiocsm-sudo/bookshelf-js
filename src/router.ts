@@ -26,6 +26,10 @@ router
   .route("/api/books/how-many")
   .get(bookController.booksHowMany);
 
+router
+  .route("/api/books/author-how-many")
+  .get(bookController.authorHowMany);
+
 router.route("/api/users").get().post();
 
 export default router;

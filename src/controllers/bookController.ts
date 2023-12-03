@@ -3,6 +3,7 @@ import { Model, Op } from "sequelize";
 import Book from "../models/book.js";
 import { randomUUID } from "crypto";
 import sequelize from "../models/db.js";
+import { group } from "console";
 // import db from "../database/db.js";
 
 type BookPostData = {
@@ -125,6 +126,9 @@ const bookController = {
       });
     }
   },
+
+  // EXTRA QUERIES
+
   bookLengthAverage: async (req: Request, res: Response) => {
     try {
       let lengthAverage: any = await Book.findAll({
@@ -133,7 +137,9 @@ const bookController = {
         ],
       });
 
-      lengthAverage = Number(lengthAverage[0].dataValues.pagesAverage).toFixed();
+      lengthAverage = Number(
+        lengthAverage[0].dataValues.pagesAverage
+      ).toFixed();
 
       res.status(200).json({
         status: "success",
@@ -153,6 +159,26 @@ const bookController = {
       res.json({
         status: "success",
         data: books.length,
+      });
+    } catch (e) {
+      res.json({
+        status: "fail",
+        message: `Ops... ${e}`,
+      });
+    }
+  },
+  authorHowMany: async (req: Request, res: Response) => {
+    try {
+      const authorHowManyBooks = await Book.findAll({
+        attributes: [
+          "author",
+          [sequelize.fn("COUNT", sequelize.col("author")), "books"]],
+        group: "author"
+      });
+
+      res.json({
+        status: "success",
+        data: authorHowManyBooks,
       });
     } catch (e) {
       res.json({
