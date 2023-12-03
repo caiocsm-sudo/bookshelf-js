@@ -17,6 +17,9 @@ const Book = database.define(
     author: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        len: [2, 35],
+      },
     },
     pages: {
       type: DataTypes.INTEGER,

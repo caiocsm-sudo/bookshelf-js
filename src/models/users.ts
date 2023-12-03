@@ -17,6 +17,9 @@ const User = database.define(
     usename: {
       type: DataTypes.STRING(30),
       allowNull: false,
+      validate: {
+        len: [3, 25],
+      },
     },
     password: {
       type: DataTypes.STRING,
@@ -25,6 +28,9 @@ const User = database.define(
     userEmail: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        isEmail: true
+      }
     },
     bookshelf: {
       type: DataTypes.ARRAY,
