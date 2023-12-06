@@ -13,6 +13,7 @@ const Book = database.define(
     title: {
       type: DataTypes.STRING(150),
       allowNull: false,
+      unique: true,
     },
     author: {
       type: DataTypes.STRING,
@@ -38,8 +39,8 @@ const Book = database.define(
   },
   {
     schema: "public",
+    timestamps: false, //-> if false, removes the createdAt and updatedAt
     // freezeTableName: true -> doesn't allow changing table name
-    // timestamps: true -> if false, removes the createdAt and updatedAt
   }
 );
 

@@ -15,6 +15,7 @@ router
 
 router
   .route("/api/books/:id")
+  .get(bookController.getBookById)
   .patch(bookController.updateBook)
   .delete(bookController.deleteBook);
 

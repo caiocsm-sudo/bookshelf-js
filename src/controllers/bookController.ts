@@ -1,9 +1,7 @@
 import { Request, Response } from "express";
-import { Model, Op } from "sequelize";
 import Book from "../models/book.js";
 import { randomUUID } from "crypto";
 import sequelize from "../models/db.js";
-import { group } from "console";
 // import db from "../database/db.js";
 
 type BookPostData = {
@@ -16,13 +14,7 @@ type BookPostData = {
 const bookController = {
   getAllBooks: async (req: Request, res: Response) => {
     try {
-      // const order = { order: [["pages", "DESC"]] };
-
-      // or, lt, gt, eq: the same functions found in mongoose is here too, in sequelize.
-      // databases are not so different at all.
-
-      // later it will recieve filters, limiting, sorting, pagination;
-      const allBooks = await Book.findAll();
+      const allBooks = await Book.findAll({ order: [["pages", "ASC"]] });
 
       res.json({
         status: "success",
@@ -41,6 +33,7 @@ const bookController = {
         let booksData: Array<BookPostData> = [...req.body];
 
         // by default, id comes empty from req.body
+        // i should've used a setter in the object model, but instead i made this algorithm to gen it
         booksData = booksData.map((el) => {
           return { ...el, id: randomUUID() };
         });
@@ -60,6 +53,7 @@ const bookController = {
         };
         // create = both build() & save();
         const newBook = await Book.create(bookData);
+
         res.json({ status: "success", data: newBook.toJSON() });
       }
     } catch (e) {
@@ -71,6 +65,13 @@ const bookController = {
   },
   getBookById: async (req: Request, res: Response) => {
     try {
+      const { id } = req.params;
+      const book = await Book.findOne({ where: { id: id } });
+
+      res.json({
+        status: "success",
+        data: book?.toJSON(),
+      });
     } catch (e) {
       res.json({
         status: "fail",
@@ -80,9 +81,6 @@ const bookController = {
   },
   updateBook: async (req: Request, res: Response) => {
     try {
-      // i need to destructure and filter the object
-      // to get only the properties that have info
-
       const updateBook = await Book.update(
         { ...req.body },
         { where: { id: req.params.id } }
@@ -135,11 +133,10 @@ const bookController = {
         attributes: [
           [sequelize.fn("AVG", sequelize.col("pages")), "pagesAverage"],
         ],
+        raw: true,
       });
 
-      lengthAverage = Number(
-        lengthAverage[0].dataValues.pagesAverage
-      ).toFixed();
+      lengthAverage = Number(lengthAverage[0].pagesAverage).toFixed();
 
       res.status(200).json({
         status: "success",
@@ -172,8 +169,9 @@ const bookController = {
       const authorHowManyBooks = await Book.findAll({
         attributes: [
           "author",
-          [sequelize.fn("COUNT", sequelize.col("author")), "books"]],
-        group: "author"
+          [sequelize.fn("COUNT", sequelize.col("author")), "books"],
+        ],
+        group: "author",
       });
 
       res.json({

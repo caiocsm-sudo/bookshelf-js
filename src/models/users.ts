@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import database from "./db.js";
+import bcrypt from "bcrypt";
 
 // Postgres is not case sensitive, but mysql is (in linux);
 // Primary Key = It's unique and the one who's going to identify the table
@@ -24,6 +25,12 @@ const User = database.define(
     password: {
       type: DataTypes.STRING,
       allowNull: false,
+      set(val: string) {
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(val, salt);
+
+        this.setDataValue("password", hash);
+      }
     },
     userEmail: {
       type: DataTypes.STRING,
